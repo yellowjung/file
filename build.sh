@@ -5,4 +5,4 @@
 # apt build-dep file
 
 autoreconf -f -i
-CC=clang CFLAGS='-O3 -mtune=haswell -flto' LDFLAGS='-flto -lm' ./configure --disable-zlib --prefix=/tmp/file && make -j$(grep -c ^processor /proc/cpuinfo)
+CC=clang CFLAGS='-O3 -mtune=haswell -flto' LDFLAGS='-static -flto -lm' ./configure --enable-static --disable-shared --disable-zlib --prefix=/tmp/file && make -j$(grep -c ^processor /proc/cpuinfo)
