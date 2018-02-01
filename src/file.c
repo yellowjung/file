@@ -495,6 +495,8 @@ unwrap(struct magic_set *ms, const char *fn)
 	return e;
 }
 
+#include "ent.c"
+
 /*
  * Called for each input file on the command line (or in a list of files)
  */
@@ -503,26 +505,23 @@ process(struct magic_set *ms, const char *inname, int wid)
 {
 	const char *type, c = nulsep > 1 ? '\0' : '\n';
 	int std_in = strcmp(inname, "-") == 0;
+	char* ret;
+	char* tmp;
 
-	if (wid > 0 && !bflag) {
-		(void)printf("%s", std_in ? "/dev/stdin" : inname);
-		if (nulsep)
-			(void)putc('\0', stdout);
-		if (nulsep < 2) {
-			(void)printf("%s", separator);
-			(void)printf("%*s ",
-			    (int) (nopad ? 0 : (wid - file_mbswidth(inname))),
-			    "");
-		}
-	}
+	if ((tmp = strrchr(inname, '.')) == NULL)
+		tmp = inname;
+
+	if ((ret = strrchr(tmp, '/')) == NULL)
+		ret = tmp;
+
+	printf("\"%s\", ", ret + 1);
 
 	type = magic_file(ms, std_in ? NULL : inname);
 
-	if (type == NULL) {
-		(void)printf("ERROR: %s%c", magic_error(ms), c);
-		return 1;
-	} else {
-		(void)printf("%s%c", type, c);
+	entmain(inname);
+
+	if (type != NULL) {
+		(void)printf("\"%s\"\n", type);
 		return 0;
 	}
 }
