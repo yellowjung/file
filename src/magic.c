@@ -451,7 +451,7 @@ file_or_fd(struct magic_set *ms, const char *inname, int fd)
 #endif
 			ispipe = 1;
 		}
-		printf("%lu, ", sb.st_size);
+		printf("\"%lu\", ", sb.st_size);
 
 		errno = 0;
 		if ((fd = open(inname, flags)) < 0) {

@@ -549,7 +549,7 @@ int entmain(const char* arg)
 	/* Print calculated results */
 
 	if (!terse) {
-           printf("%.9f, ", ent);
+           printf("\"%.9f\", ", ent);
 
 #if 0
            printf("Entropy = %f bits per %s.\n", ent, samp);
