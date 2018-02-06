@@ -12,18 +12,20 @@ while True:
     Tmp = readTmp.split(',')
     try:
         entropy = float(Tmp[2])
+        if entropy < 5:
+            result[0] += 1
+        elif entropy >= 5 and entropy < 6:
+            result[1] += 1
+        elif entropy >= 6 and entropy < 7:
+            result[2] += 1
+        elif entropy >= 7 and entropy < 8:
+            result[3] += 1
+        elif entropy >= 8:
+            result[4] += 1
+
     except:
         error.append(count)
-    if entropy < 5:
-        result[0] += 1
-    elif entropy >= 5 and entropy < 6:
-        result[1] += 1
-    elif entropy >= 6 and entropy < 7:
-        result[2] += 1
-    elif entropy >= 7 and entropy < 8:
-        result[3] += 1
-    elif entropy >= 8:
-        result[4] += 1
+
     if not readTmp : break
     count += 1
 
