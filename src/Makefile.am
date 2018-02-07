@@ -20,7 +20,7 @@ endif
 libmagic_la_LIBADD = $(LTLIBOBJS) $(MINGWLIBS)
 
 file_SOURCES = file.c
-file_LDADD = libmagic.la -luuid
+file_LDADD = libmagic.la -lrpcrt4
 CLEANFILES = magic.h
 EXTRA_DIST = magic.h.in
 HDR= $(top_srcdir)/src/magic.h.in

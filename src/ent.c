@@ -365,7 +365,7 @@ static double pochisq(
 
 /*  GETOPT  --	Dumb version of getopt for brain-dead Windows.  */
 
-#ifdef _WIN32	
+#if 0 //def _WIN32	
 static int optind = 1;
 
 static int getopt(int argc, char *argv[], char *opts)
@@ -443,7 +443,7 @@ int entmain(const char* arg, FILE *fpp)
 	   }
 //	}
 	
-#ifdef _WIN32
+#if 0 //def _WIN32
 
 	    /** Warning!  On systems which distinguish text mode and
 		binary I/O (MS-DOS, Macintosh, etc.) the modes in the open

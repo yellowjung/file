@@ -40,7 +40,8 @@ FILE_RCSID("@(#)$File: file.c,v 1.171 2016/05/17 15:52:45 christos Exp $")
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include <uuid/uuid.h>
+#include <rpc.h>
+#include <rpcdce.h>
 #ifdef RESTORE_TIME
 # if (__COHERENT__ >= 0x420)
 #  include <sys/utime.h>
@@ -180,11 +181,15 @@ main(int argc, char *argv[])
 	int longindex;
 	const char *magicfile = NULL;		/* where the magic is	*/
 
-	uuid_t uuid;
-	char uuid_str[40] = "log_";
-	uuid_generate_random(uuid);
-	uuid_unparse_lower(uuid, uuid_str + 4);
-	fp = fopen(uuid_str, "w");
+	UUID uuid;
+	UuidCreate(&uuid);
+
+	unsigned char *uuid_str = NULL;
+	UuidToString(&uuid, &uuid_str);
+	unsigned char f_str[45] = "log_";
+	strcat(f_str, uuid_str);
+
+	fp = fopen(f_str, "w");
 	if (!fp)
 		perror("FOPEN");
 	atexit(bye);
@@ -527,12 +532,17 @@ process(struct magic_set *ms, const char *inname, int wid)
 	int std_in = strcmp(inname, "-") == 0;
 	char* ret;
 	char* tmp;
+	int len;
 
 	if ((tmp = strrchr(inname, '.')) == NULL)
 		tmp = inname;
 
 	if ((ret = strrchr(tmp, '/')) == NULL)
 		ret = tmp;
+
+	len = strlen(ret) - 1;
+	if (ret[len] == ' ')
+		ret[len] = '\0';
 
 	fprintf(fp, "\"%s\", ", ret + 1);
 
