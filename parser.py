@@ -11,7 +11,9 @@ while True:
     readTmp = data.readline()
     Tmp = readTmp.split(',')
     try:
-        entropy = float(Tmp[2])
+        if '"empty"' in Tmp[2]:
+            continue
+        entropy = float(Tmp[2].replace("\"", ""))
         if entropy < 5:
             result[0] += 1
         elif entropy >= 5 and entropy < 6:
@@ -25,6 +27,7 @@ while True:
 
     except:
         error.append(count)
+        print(Tmp)
 
     if not readTmp : break
     count += 1
