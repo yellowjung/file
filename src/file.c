@@ -40,6 +40,7 @@ FILE_RCSID("@(#)$File: file.c,v 1.171 2016/05/17 15:52:45 christos Exp $")
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <uuid/uuid.h>
 #ifdef RESTORE_TIME
 # if (__COHERENT__ >= 0x420)
 #  include <sys/utime.h>
@@ -158,6 +159,16 @@ private void applyparam(magic_t);
 /*
  * main - parse arguments and handle options
  */
+FILE *fp = NULL;
+
+void bye(void)
+{
+	if (fp) {
+		if(fclose(fp))
+		perror("REASON");
+	}
+}
+
 int
 main(int argc, char *argv[])
 {
@@ -168,6 +179,15 @@ main(int argc, char *argv[])
 	struct magic_set *magic = NULL;
 	int longindex;
 	const char *magicfile = NULL;		/* where the magic is	*/
+
+	uuid_t uuid;
+	char uuid_str[40] = "log_";
+	uuid_generate_random(uuid);
+	uuid_unparse_lower(uuid, uuid_str + 4);
+	fp = fopen(uuid_str, "w");
+	if (!fp)
+		perror("FOPEN");
+	atexit(bye);
 
 	/* makes islower etc work for other langs */
 #ifdef HAVE_SETLOCALE
@@ -514,16 +534,18 @@ process(struct magic_set *ms, const char *inname, int wid)
 	if ((ret = strrchr(tmp, '/')) == NULL)
 		ret = tmp;
 
-	printf("\"%s\", ", ret + 1);
+	fprintf(fp, "\"%s\", ", ret + 1);
 
-	type = magic_file(ms, std_in ? NULL : inname);
+	type = magic_file(ms, std_in ? NULL : inname, fp);
 
-	entmain(inname);
+	entmain(inname, fp);
 
-	if (type != NULL) {
-		(void)printf("\"%s\"\n", type);
-		return 0;
-	}
+	if (type != NULL)
+		(void)fprintf(fp, "\"%s\"\n", type);
+	else
+		return 1;
+
+	return 0;
 }
 
 protected size_t

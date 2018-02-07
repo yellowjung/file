@@ -5,3 +5,4 @@
 
 FILE=/tmp/file/bin/file
 find "$@" -xdev -type f | xargs -n8192 -P$(grep -c ^processor /proc/cpuinfo) -d '\n' $FILE -f -
+ls | grep "log_" | while read file; do cat $file; rm $file; done

@@ -350,7 +350,7 @@ file_fsmagic(struct magic_set *ms, const char *fn, struct stat *sb)
 		if ((ms->flags & MAGIC_SYMLINK) != 0) {
 			const char *p;
 			ms->flags &= MAGIC_SYMLINK;
-			p = magic_file(ms, buf);
+			p = magic_file(ms, buf, NULL);
 			ms->flags |= MAGIC_SYMLINK;
 			if (p == NULL)
 				return -1;

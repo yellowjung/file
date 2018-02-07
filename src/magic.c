@@ -76,7 +76,7 @@ private void close_and_restore(const struct magic_set *, const char *, int,
 private int unreadable_info(struct magic_set *, mode_t, const char *);
 private const char* get_default_magic(void);
 #ifndef COMPILE_ONLY
-private const char *file_or_fd(struct magic_set *, const char *, int);
+private const char *file_or_fd(struct magic_set *, const char *, int, FILE *);
 #endif
 
 #ifndef	STDIN_FILENO
@@ -385,22 +385,22 @@ magic_descriptor(struct magic_set *ms, int fd)
 {
 	if (ms == NULL)
 		return NULL;
-	return file_or_fd(ms, NULL, fd);
+	return file_or_fd(ms, NULL, fd, NULL);
 }
 
 /*
  * find type of named file
  */
 public const char *
-magic_file(struct magic_set *ms, const char *inname)
+magic_file(struct magic_set *ms, const char *inname, FILE *fp)
 {
 	if (ms == NULL)
 		return NULL;
-	return file_or_fd(ms, inname, STDIN_FILENO);
+	return file_or_fd(ms, inname, STDIN_FILENO, fp);
 }
 
 private const char *
-file_or_fd(struct magic_set *ms, const char *inname, int fd)
+file_or_fd(struct magic_set *ms, const char *inname, int fd, FILE *fp)
 {
 	int	rv = -1;
 	unsigned char *buf;
@@ -451,7 +451,8 @@ file_or_fd(struct magic_set *ms, const char *inname, int fd)
 #endif
 			ispipe = 1;
 		}
-		printf("\"%lu\", ", sb.st_size);
+		if (fp)
+			fprintf(fp, "\"%lu\", ", sb.st_size);
 
 		errno = 0;
 		if ((fd = open(inname, flags)) < 0) {

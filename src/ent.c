@@ -393,7 +393,7 @@ static int getopt(int argc, char *argv[], char *opts)
 
 /*  Main program  */
 
-int entmain(const char* arg)
+int entmain(const char* arg, FILE *fpp)
 {
 	int i, oc, opt;
 	long ccount[256];	      /* Bins to count occurrences of values */
@@ -549,7 +549,7 @@ int entmain(const char* arg)
 	/* Print calculated results */
 
 	if (!terse) {
-           printf("\"%.9f\", ", ent);
+           fprintf(fpp, "\"%.9f\", ", ent);
 
 #if 0
            printf("Entropy = %f bits per %s.\n", ent, samp);
