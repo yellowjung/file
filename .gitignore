@@ -36,4 +36,5 @@ Makefile.in
 /src/file
 /src/magic.h
 
+!/bin/**
 log*
