@@ -2,16 +2,19 @@ import re
 import sys
 
 filename = sys.argv[1]
-data = open(filename)
+data = open(filename, 'r', errors='replace')
 result = [0,0,0,0,0]
 count = 0
 r_text = 0
 error = []
+empty = []
 while True:
     readTmp = data.readline()
+    if not readTmp : break
     Tmp = readTmp.split(',')
     try:
         if '"empty"' in Tmp[2]:
+            empty.append(count)
             continue
         entropy = float(Tmp[2].replace("\"", ""))
         if entropy < 5:
@@ -27,18 +30,20 @@ while True:
 
     except:
         error.append(count)
-        print(Tmp)
+        print(count, Tmp)
 
-    if not readTmp : break
     count += 1
 
 print("Error text count: ", len(error))
+print("Empty text count: ", len(empty))
 
 for res in result:
     r_text += res
 print("Correct text count: ", r_text)
-print("ratio : ",len(error)/count*100,"%")
+print("Error ratio : ",len(error)/(count+len(error)+len(empty))*100,"%")
+print("Empty ratio : ",len(empty)/(count+len(error)+len(empty))*100,"%")
 print("Result:")
 for res in result:
     print(res)
+print("Total count : ", count + len(error) + len(empty))
 data.close()
